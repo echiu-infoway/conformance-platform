@@ -5,6 +5,7 @@ This project contains the Conformance Platform.
 ## Clone repos
 
 This project only contains the docker details. It assumes you have cloned the relevant modules into this directory.
+You can run clone.sh to do this for you.
 
 ## Docker Usage
 
