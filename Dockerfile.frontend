@@ -3,6 +3,7 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 COPY conformance-platform-ui/connected-care/package*.json ./
+COPY .env.production ./
 RUN npm install
 COPY conformance-platform-ui/connected-care/. .
 RUN npm run build
