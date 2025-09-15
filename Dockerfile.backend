@@ -1,0 +1,32 @@
+# Stage 1: Build with Maven
+FROM maven:amazoncorretto AS build
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the core module and build it
+COPY conformance-platform-core/pom.xml ./conformance-platform-core/
+COPY conformance-platform-core/src ./conformance-platform-core/src
+RUN cd conformance-platform-core && mvn clean install
+
+# Copy the psca test suite module and build it
+COPY conformance-psca-suite/pom.xml ./conformance-psca-suite/
+COPY conformance-psca-suite/src ./conformance-psca-suite/src
+RUN cd conformance-psca-suite && mvn clean install
+
+# Copy the psca test suite module and build it
+COPY conformance-erec-suite/pom.xml ./conformance-erec-suite/
+COPY conformance-erec-suite/src ./conformance-erec-suite/src
+RUN cd conformance-erec-suite && mvn clean install
+
+# Copy the api module and build it
+COPY conformance-platform-api/pom.xml ./conformance-platform-api/
+COPY conformance-platform-api/src ./conformance-platform-api/src
+RUN cd conformance-platform-api && mvn clean install
+
+# Stage 2: Create the final image
+FROM eclipse-temurin:17
+WORKDIR /app
+COPY --from=build /app/conformance-platform-api/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","app.jar"]
