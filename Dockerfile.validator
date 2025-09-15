@@ -5,16 +5,9 @@ FROM gradle:jdk17-corretto AS build
 WORKDIR /app
 
 # Copy the core module and build it
-COPY conformance-fhir-validator/build.gradle.kts ./conformance-fhir-validator/
-COPY conformance-fhir-validator/matchbox-engine ./conformance-fhir-validator/matchbox-engine
-COPY conformance-fhir-validator/vfx-validator-api ./conformance-fhir-validator/vfx-validator-api
-COPY conformance-fhir-validator/vfx-validator-core ./conformance-fhir-validator/vfx-validator-core
-COPY conformance-fhir-validator/gradle ./conformance-fhir-validator/gradle
-COPY conformance-fhir-validator/gradlew ./conformance-fhir-validator/gradlew
-COPY conformance-fhir-validator/gradlew.bat ./conformance-fhir-validator/gradlew.bat
-CMD chmod +x gradlew
+COPY conformance-fhir-validator/ ./conformance-fhir-validator/
 
-RUN cd conformance-fhir-validator && bash ./gradlew clean build -x test
+RUN cd /app/conformance-fhir-validator && bash ./gradlew clean build -x test
 
 # Stage 2: Create the final image
 FROM eclipse-temurin:17
