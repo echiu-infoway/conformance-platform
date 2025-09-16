@@ -1,0 +1,21 @@
+# Stage 1: Build with Maven
+FROM maven:amazoncorretto AS build
+
+# Set the working directory
+WORKDIR /app
+
+COPY conformance-platform-core/pom.xml ./conformance-platform-core/
+COPY conformance-platform-core/src ./conformance-platform-core/src
+RUN cd conformance-platform-core && mvn clean install
+
+COPY conformance-psca-suite/pom.xml ./conformance-psca-suite/
+COPY conformance-psca-suite/src ./conformance-psca-suite/src
+RUN cd conformance-psca-suite && mvn clean install
+
+COPY conformance-erec-suite/pom.xml ./conformance-erec-suite/
+COPY conformance-erec-suite/src ./conformance-erec-suite/src
+RUN cd conformance-erec-suite && mvn clean install
+
+COPY conformance-platform-api/pom.xml ./conformance-platform-api/
+COPY conformance-platform-api/src ./conformance-platform-api/src
+RUN cd conformance-platform-api && mvn test -P dataLoader

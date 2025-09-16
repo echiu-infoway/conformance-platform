@@ -7,6 +7,21 @@ services:
       - "3001:80"
     networks:
       - conformance-net
+  database:
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+    restart: always
+    # set shared memory limit when using docker compose
+    shm_size: 128mb
+    environment:
+      - POSTGRES_USER=conformance
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=conformance_db
+    networks:
+      - conformance-net
+    volumes:
+      - postgres16:/var/lib/postgresql/data
   backend:
     build:
       context: .
@@ -18,11 +33,13 @@ services:
       - ALLOWED_ORIGINS=http://localhost:3001
       - AZURE_AD_AUTH_ENABLED=false
       - FHIR_VALIDATOR_ENDPOINT=${FHIR_VALIDATOR_ENDPOINT}
-      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD} #escaped characters better handled in .env
-      - SPRING_DATASOURCE_URL=
-      - SPRING_DATASOURCE_USERNAME=
+      - SPRING_DATASOURCE_PASSWORD=password #escaped characters better handled in .env
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/au-vfxCucumberConf-db
+      - SPRING_DATASOURCE_USERNAME=conformance
     networks:
       - conformance-net
+    depends_on:
+      - db_seed
   validator:
     build:
       context: .
@@ -31,7 +48,21 @@ services:
       - SERVER_PORT=9380
     networks:
       - conformance-net
+  db_seed:
+    build:
+      context: .
+      dockerfile: Dockerfile.db_seed
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/au-vfxCucumberConf-db
+      - SPRING_DATASOURCE_USERNAME=conformance
+      - SPRING_DATASOURCE_PASSWORD=password
+    networks:
+      - conformance-net
+    command:
+      ["sh", "-c", "cd conformance-platform-api && mvn test -P dataLoader"]
 
 networks:
   conformance-net:
     driver: bridge
+volumes:
+  postgres16:
