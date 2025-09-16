@@ -18,4 +18,3 @@ RUN cd conformance-erec-suite && mvn clean install
 
 COPY conformance-platform-api/pom.xml ./conformance-platform-api/
 COPY conformance-platform-api/src ./conformance-platform-api/src
-RUN cd conformance-platform-api && mvn test -P dataLoader
