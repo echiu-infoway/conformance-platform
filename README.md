@@ -35,6 +35,13 @@ To run this project using Docker, follow these steps:
 
     This command will build the Docker images for the `frontend` and `backend` services and start the containers.
 
+1.  ** Seed Data **
+    Run:
+
+    ```
+    docker-compose run db_seed
+    ```
+
 1.  **Access the application:**
     Once the containers are running, you can access the application at the following URLs:
     - **Frontend:** [http://localhost:3001](http://localhost:3001)
