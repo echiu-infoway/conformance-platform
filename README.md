@@ -35,12 +35,8 @@ To run this project using Docker, follow these steps:
 
     This command will build the Docker images for the `frontend` and `backend` services and start the containers.
 
-1.  ** Seed Data **
-    Run:
-
-    ```
-    docker-compose run db_seed
-    ```
+1.  ** Data **
+    At the moment, when you docker-compose up, db_seed service will run and re-seed the database. Remove the command from this service to keep you data between sessions.
 
 1.  **Access the application:**
     Once the containers are running, you can access the application at the following URLs:
